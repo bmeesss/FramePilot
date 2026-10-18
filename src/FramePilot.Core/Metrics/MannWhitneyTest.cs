@@ -94,7 +94,9 @@ public static class MannWhitneyTest
         }
 
         var z = (u - mean + 0.5) / Math.Sqrt(variance);
-        var p = 2.0 * (1.0 - NormalCumulative(z));
+
+        // The two sided p value uses the absolute value of z.
+        var p = 2.0 * (1.0 - NormalCumulative(Math.Abs(z)));
 
         return Math.Clamp(p, 0.0, 1.0);
     }
