@@ -10,6 +10,7 @@ estimate, an average or a plausible looking number.
 | Value | Source | Meaning | Limits |
 | --- | --- | --- | --- |
 | CPU utilisation | `GetSystemTimes` (kernel, user, idle) | Share of the processor time that was not idle, averaged over all logical processors. | The first sample of a session only establishes the reference values. Counters are cumulative since boot, so a sample pair is needed. |
+| Busy cores (equivalent) | derived from the CPU utilisation and the processor count | The aggregated utilisation multiplied with the number of logical processors, shown as "x.y busy on average" (50 % on eight processors = 4.0 busy cores). | It is an equivalent of the aggregated counter, **not** the load of a single core. The load of one core cannot be derived from the aggregated Windows counters. |
 | Logical processors | `Environment.ProcessorCount` | Number of processors visible to the process. | Restricted by processor groups on very large machines. |
 | Physical cores | `GetLogicalProcessorInformationEx` | Number of physical processor packages. | `null` when the API is not available; the value is then shown as *Unavailable*. |
 | Physical memory | `GlobalMemoryStatusEx` | Total, available and used physical RAM of the **machine**. | This is not the memory usage of a single application. The "available" value is an estimate of what can be allocated without swapping. |
