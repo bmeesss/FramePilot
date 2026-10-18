@@ -5,7 +5,9 @@
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- The WPF SDK replaces the default implicit usings with its own list,
+         so every namespace is imported explicitly in the source files. -->
+    <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>FramePilot.App</RootNamespace>
     <AssemblyName>FramePilot</AssemblyName>
     <Product>FramePilot</Product>

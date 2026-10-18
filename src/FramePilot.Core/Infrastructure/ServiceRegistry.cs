@@ -28,6 +28,23 @@ public sealed class ServiceRegistry
         return this;
     }
 
+    /// <summary>
+    /// Registers a type as a singleton. The instance is created by the
+    /// container, so the constructor dependencies are injected.
+    /// </summary>
+    public ServiceRegistry RegisterSingleton<TService>()
+        where TService : class
+    {
+        lock (_gate)
+        {
+            _registrations[typeof(TService)] = new Registration(
+                r => r.CreateInstance(typeof(TService)),
+                isSingleton: true);
+        }
+
+        return this;
+    }
+
     /// <summary>Registers a factory as a singleton.</summary>
     public ServiceRegistry RegisterSingleton<TService>(Func<ServiceRegistry, TService> factory)
         where TService : class

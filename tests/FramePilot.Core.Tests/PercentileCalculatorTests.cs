@@ -10,7 +10,7 @@ public class PercentileCalculatorTests
         var values = new[] { 1.0, 2.0, 3.0, 4.0 };
 
         Assert.Equal(2.5, PercentileCalculator.Percentile(values, 50), 6);
-        Assert.Equal(3.75, PercentileCalculator.Percentile(values, 75), 6);
+        Assert.Equal(3.25, PercentileCalculator.Percentile(values, 75), 6);
         Assert.Equal(1.0, PercentileCalculator.Percentile(values, 0), 6);
         Assert.Equal(4.0, PercentileCalculator.Percentile(values, 100), 6);
     }

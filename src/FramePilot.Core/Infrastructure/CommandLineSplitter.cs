@@ -66,6 +66,15 @@ public static class CommandLineSplitter
 
             if (c == '"')
             {
+                if (inQuotes && i + 1 < commandLine.Length && commandLine[i + 1] == '"')
+                {
+                    // A doubled quote inside a quoted value is a literal quote.
+                    current.Append('"');
+                    hasValue = true;
+                    i++;
+                    continue;
+                }
+
                 inQuotes = !inQuotes;
                 hasValue = true;
                 continue;

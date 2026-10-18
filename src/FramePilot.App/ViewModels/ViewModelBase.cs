@@ -1,3 +1,4 @@
+using System;
 using FramePilot.Core.Infrastructure;
 
 namespace FramePilot.App.ViewModels;

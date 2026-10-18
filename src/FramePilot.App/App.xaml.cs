@@ -1,9 +1,11 @@
+using System;
 using System.Windows;
 using FramePilot.App.Services;
 using FramePilot.App.ViewModels;
 using FramePilot.App.Views;
 using FramePilot.Core.Abstractions;
 using FramePilot.Core.Infrastructure;
+using FramePilot.Core.Metrics;
 using FramePilot.Core.Services;
 using FramePilot.Core.Sessions;
 using FramePilot.Windows;

@@ -30,8 +30,9 @@ public class CommandLineSplitterTests
     {
         var arguments = CommandLineSplitter.Split("--title \"say \"\"hi\"\"\"");
 
-        Assert.Single(arguments);
-        Assert.Equal("say \"hi\"", arguments[0]);
+        Assert.Equal(2, arguments.Count);
+        Assert.Equal("--title", arguments[0]);
+        Assert.Equal("say \"hi\"", arguments[1]);
     }
 
     [Fact]
