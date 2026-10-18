@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <!-- The WPF SDK replaces the default implicit usings with its own list,
+         so every namespace is imported explicitly in the source files. -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>FramePilot.App</RootNamespace>
+    <AssemblyName>FramePilot</AssemblyName>
+    <Product>FramePilot</Product>
+    <Description>Evidence based Windows performance and gaming optimization tool.</Description>
+    <Version>1.0.0</Version>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FramePilot.Core\FramePilot.Core.csproj" />
+    <ProjectReference Include="..\FramePilot.Windows\FramePilot.Windows.csproj" />
+  </ItemGroup>
+
+</Project>

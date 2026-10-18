@@ -1,0 +1,173 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'arena/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  core-tests:
+    name: Core unit tests (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore tests/FramePilot.Core.Tests/FramePilot.Core.Tests.csproj
+
+      - name: Build
+        run: dotnet build tests/FramePilot.Core.Tests/FramePilot.Core.Tests.csproj -c Release --no-restore
+
+      - name: Test
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p artifacts/test-results artifacts
+          dotnet test tests/FramePilot.Core.Tests/FramePilot.Core.Tests.csproj \
+            -c Release --no-build \
+            --logger "trx;LogFileName=core-tests.trx" \
+            --results-directory artifacts/test-results 2>&1 | tee artifacts/test-output.txt
+
+      - name: Report the test result
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import glob, html, os, re
+
+          def emit(kind, text):
+              print('::%s::%s' % (kind, text.replace('\r', ' ')))
+
+          files = glob.glob('artifacts/test-results/**/*.trx', recursive=True)
+          if not files:
+              emit('notice', 'No test result file was found.')
+          for path in files:
+              data = open(path, encoding='utf-8', errors='replace').read()
+              counters = re.search(r'<Counters\b[^>]*/>', data)
+              emit('notice', 'TRX %s %s' % (os.path.basename(path), counters.group(0) if counters else 'no counters'))
+              results = list(re.finditer(r'<UnitTestResult\b([^>]*)>(.*?)</UnitTestResult>', data, re.S))
+              emit('notice', 'TRX %s contains %d test results' % (os.path.basename(path), len(results)))
+              for match in results[:25]:
+                  attributes, body = match.group(1), match.group(2)
+                  outcome = re.search(r'outcome="([^"]*)"', attributes)
+                  outcome = outcome.group(1) if outcome else '?'
+                  if outcome == 'Passed':
+                      continue
+                  name = re.search(r'testName="([^"]*)"', attributes)
+                  message = re.search(r'<Message>(.*?)</Message>', body, re.S)
+                  text = html.unescape(message.group(1)) if message else 'no message'
+                  text = re.sub(r'\s+', ' ', text)[:1500]
+                  emit('error', 'RESULT %s :: %s :: %s' % (outcome, name.group(1) if name else '?', text))
+          if os.path.exists('artifacts/test-output.txt'):
+              tail = open('artifacts/test-output.txt', encoding='utf-8', errors='replace').read()[-3000:]
+              emit('notice', 'TEST OUTPUT TAIL: ' + re.sub(r'\s+', ' ', tail))
+          PY
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-test-results
+          path: |
+            artifacts/test-results
+            artifacts/test-output.txt
+
+  windows:
+    name: Windows build, tests and publish
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore FramePilot.sln
+
+      - name: Build
+        run: dotnet build FramePilot.sln -c Release --no-restore
+
+      - name: Test
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts/test-results | Out-Null
+          dotnet test tests/FramePilot.Core.Tests/FramePilot.Core.Tests.csproj `
+            -c Release --no-build `
+            --logger "trx;LogFileName=core-tests.trx" `
+            --results-directory artifacts/test-results 2>&1 |
+            Tee-Object -FilePath artifacts/test-output.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Report the test result
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import glob, html, os, re
+
+          def emit(kind, text):
+              print('::%s::%s' % (kind, text.replace('\r', ' ')))
+
+          files = glob.glob('artifacts/test-results/**/*.trx', recursive=True)
+          if not files:
+              emit('notice', 'No test result file was found.')
+          for path in files:
+              data = open(path, encoding='utf-8', errors='replace').read()
+              counters = re.search(r'<Counters\b[^>]*/>', data)
+              emit('notice', 'TRX %s %s' % (os.path.basename(path), counters.group(0) if counters else 'no counters'))
+              results = list(re.finditer(r'<UnitTestResult\b([^>]*)>(.*?)</UnitTestResult>', data, re.S))
+              emit('notice', 'TRX %s contains %d test results' % (os.path.basename(path), len(results)))
+              for match in results[:25]:
+                  attributes, body = match.group(1), match.group(2)
+                  outcome = re.search(r'outcome="([^"]*)"', attributes)
+                  outcome = outcome.group(1) if outcome else '?'
+                  if outcome == 'Passed':
+                      continue
+                  name = re.search(r'testName="([^"]*)"', attributes)
+                  message = re.search(r'<Message>(.*?)</Message>', body, re.S)
+                  text = html.unescape(message.group(1)) if message else 'no message'
+                  text = re.sub(r'\s+', ' ', text)[:1500]
+                  emit('error', 'RESULT %s :: %s :: %s' % (outcome, name.group(1) if name else '?', text))
+          if os.path.exists('artifacts/test-output.txt'):
+              tail = open('artifacts/test-output.txt', encoding='utf-8', errors='replace').read()[-3000:]
+              emit('notice', 'TEST OUTPUT TAIL: ' + re.sub(r'\s+', ' ', tail))
+          PY
+
+      - name: Publish (self contained, single file, win-x64)
+        run: >
+          dotnet publish src/FramePilot.App/FramePilot.App.csproj
+          -c Release -r win-x64 --self-contained true
+          -o artifacts/publish
+
+      - name: Verify the published artifacts
+        shell: pwsh
+        run: |
+          $exe = 'artifacts/publish/FramePilot.exe'
+          if (-not (Test-Path $exe)) { throw "$exe was not produced" }
+          $size = (Get-Item $exe).Length
+          Write-Host "Published $exe ($([math]::Round($size / 1MB, 1)) MB)"
+          if ($size -lt 1MB) { throw "The published executable looks too small" }
+          Get-ChildItem artifacts/publish | Select-Object Name, Length | Format-Table
+
+      - name: Upload the published application
+        uses: actions/upload-artifact@v4
+        with:
+          name: FramePilot-win-x64
+          path: artifacts/publish

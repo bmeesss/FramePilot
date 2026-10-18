@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>FramePilot.Core</RootNamespace>
+    <AssemblyName>FramePilot.Core</AssemblyName>
+    <IsTrimmable>false</IsTrimmable>
+  </PropertyGroup>
+
+</Project>

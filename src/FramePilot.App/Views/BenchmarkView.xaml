@@ -1,0 +1,145 @@
+<UserControl x:Class="FramePilot.App.Views.BenchmarkView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="26,22,26,26">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitle}" />
+            <TextBlock Text="{Binding Description}" Style="{StaticResource PageSubtitle}" />
+        </StackPanel>
+
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,16,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="PRESENTMON" Style="{StaticResource CardTitle}" />
+                    <TextBlock Text="{Binding PresentMonStatus}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                    <Button Content="Check again" Command="{Binding CheckPresentMonCommand}" Margin="0,0,8,0" />
+                    <Button Content="Import a recording" Command="{Binding ImportCommand}" Style="{StaticResource PrimaryButton}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,12,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock Text="PROCESS (OPTIONAL)" Style="{StaticResource CardTitle}" />
+                    <TextBox Text="{Binding CaptureProcessName, UpdateSourceTrigger=PropertyChanged}" Margin="0,6,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,10,0">
+                    <TextBlock Text="DURATION (SECONDS)" Style="{StaticResource CardTitle}" />
+                    <TextBox Text="{Binding CaptureDurationSeconds, UpdateSourceTrigger=PropertyChanged}" Margin="0,6,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource CardTitle}" TextWrapping="Wrap" />
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button Content="Start recording"
+                            Command="{Binding StartCaptureCommand}"
+                            Style="{StaticResource PrimaryButton}"
+                            Margin="0,0,8,0" />
+                    <Button Content="Stop recording" Command="{Binding StopCaptureCommand}" />
+                </StackPanel>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4"
+                           Style="{StaticResource CardTitle}"
+                           TextWrapping="Wrap"
+                           Margin="0,12,0,0"
+                           Text="The recording is written into the local capture folder. PresentMon ends the recording on its own after the given duration, so the CSV file is always closed properly. When you stop it early, FramePilot asks PresentMon to shut down; if that is not possible the process is ended and the last frame of the recording can be missing - the analysis skips incomplete rows and reports the truncation." />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="3" Margin="0,12,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="BASELINE" Style="{StaticResource CardTitle}" VerticalAlignment="Center" />
+                    <TextBox Text="{Binding BaselineConfiguration, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="8,0,20,0" />
+                    <TextBlock Text="OPTIMIZED" Style="{StaticResource CardTitle}" VerticalAlignment="Center" />
+                    <TextBox Text="{Binding OptimizedConfiguration, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="8,0,20,0" />
+                    <TextBlock Text="MINIMUM RUNS" Style="{StaticResource CardTitle}" VerticalAlignment="Center" />
+                    <TextBox Text="{Binding MinimumRuns, UpdateSourceTrigger=PropertyChanged}" Width="60" Margin="8,0,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="Compare the runs" Command="{Binding CompareCommand}" Style="{StaticResource PrimaryButton}" Margin="0,0,8,0" />
+                    <Button Content="Save the report" Command="{Binding SaveReportCommand}" />
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+
+                <DataGrid Grid.Column="0" ItemsSource="{Binding Runs}" IsReadOnly="False">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Configuration" Width="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox Style="{StaticResource DarkComboBox}"
+                                              IsEditable="True"
+                                              ItemsSource="{Binding DataContext.ConfigurationNames, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                              Text="{Binding Configuration, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                              Padding="6,3"
+                                              MinHeight="26" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridCheckBoxColumn Header="Warm-up" Binding="{Binding IsWarmUp, Mode=TwoWay}" Width="80" />
+                        <DataGridTextColumn Header="File" Binding="{Binding FileName}" Width="2*" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Frames" Binding="{Binding FrameCount}" Width="80" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Avg FPS" Binding="{Binding AverageFps, StringFormat='0.0'}" Width="90" IsReadOnly="True" />
+                        <DataGridTextColumn Header="1 % low" Binding="{Binding OnePercentLowFps, StringFormat='0.0'}" Width="90" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Median frame" Binding="{Binding MedianFrameTimeMs, StringFormat='0.00'}" Width="100" IsReadOnly="True" />
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Border Grid.Column="2" Style="{StaticResource Card}" Padding="14">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <TextBlock Text="{Binding ReportText}"
+                                   Style="{StaticResource Mono}"
+                                   TextWrapping="Wrap" />
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <TextBlock Grid.Row="4"
+                   Style="{StaticResource CardTitle}"
+                   TextWrapping="Wrap"
+                   Margin="0,12,0,0"
+                   Text="Method: use the same game, executable, graphics settings, scene or replay, resolution and test duration for every run, and alternate between the baseline and the optimized configuration. Mark a run as warm-up when it only served to fill the shader or driver cache - warm-up runs are excluded from the comparison. FramePilot compares the medians of the runs, reports the run to run spread and uses a rank sum test to decide whether the difference is larger than the noise. A result that is not significant is reported as inconclusive, and a successful optimization without a measurable gain is a valid result." />
+    </Grid>
+</UserControl>

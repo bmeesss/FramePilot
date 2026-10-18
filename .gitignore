@@ -1,0 +1,33 @@
+## Build output
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Oo]utput/
+artifacts/
+publish/
+*.binlog
+*.user
+*.suo
+*.userprefs
+
+## Visual Studio / Rider / VS Code
+.vs/
+.vscode/
+.idea/
+*.sln.docstates
+
+## Test results
+[Tt]est[Rr]esult*/
+coverage*.xml
+coverage*.json
+*.trx
+
+## FramePilot runtime data (never commit user captures or reports)
+*.fpcap
+framepilot-captures/
+framepilot-reports/
+
+## OS noise
+Thumbs.db
+desktop.ini
+.DS_Store

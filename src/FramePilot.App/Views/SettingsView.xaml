@@ -1,0 +1,121 @@
+<UserControl x:Class="FramePilot.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="26,22,26,26">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitle}" />
+            <TextBlock Text="{Binding Description}" Style="{StaticResource PageSubtitle}" />
+
+            <Border Style="{StaticResource Card}" Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Text="PRESENTMON" Style="{StaticResource CardTitle}" />
+                    <TextBlock Text="FramePilot reads the CSV files of the official PresentMon tool. The tool itself is not part of FramePilot and is not redistributed with it."
+                               Style="{StaticResource CardTitle}"
+                               TextWrapping="Wrap"
+                               Margin="0,4,0,10" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0"
+                                 Text="{Binding PresentMonPath, UpdateSourceTrigger=PropertyChanged}"
+                                 VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,0,0">
+                            <Button Content="Browse" Command="{Binding BrowsePresentMonCommand}" Margin="0,0,8,0" />
+                            <Button Content="Check" Command="{Binding CheckPresentMonCommand}" />
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="{Binding PresentMonStatus}" Style="{StaticResource CardTitle}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="MEASUREMENT" Style="{StaticResource CardTitle}" />
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="DASHBOARD INTERVAL (SECONDS)" Style="{StaticResource CardTitle}" />
+                            <TextBox Text="{Binding SampleIntervalSeconds, UpdateSourceTrigger=PropertyChanged}" Margin="0,6,0,0" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,0">
+                            <TextBlock Text="MINIMUM RUNS PER CONFIGURATION" Style="{StaticResource CardTitle}" />
+                            <TextBox Text="{Binding MinimumRuns, UpdateSourceTrigger=PropertyChanged}" Margin="0,6,0,0" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,14,10,0">
+                            <TextBlock Text="BASELINE CONFIGURATION NAME" Style="{StaticResource CardTitle}" />
+                            <TextBox Text="{Binding BaselineConfiguration, UpdateSourceTrigger=PropertyChanged}" Margin="0,6,0,0" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,14,0,0">
+                            <TextBlock Text="OPTIMIZED CONFIGURATION NAME" Style="{StaticResource CardTitle}" />
+                            <TextBox Text="{Binding OptimizedConfiguration, UpdateSourceTrigger=PropertyChanged}" Margin="0,6,0,0" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,14,10,0">
+                            <TextBlock Text="CAPTURE DURATION (SECONDS)" Style="{StaticResource CardTitle}" />
+                            <TextBox Text="{Binding CaptureDurationSeconds, UpdateSourceTrigger=PropertyChanged}" Margin="0,6,0,0" />
+                        </StackPanel>
+                        <Button Grid.Row="2" Grid.Column="1"
+                                Content="Save the settings"
+                                Command="{Binding SaveCommand}"
+                                Style="{StaticResource PrimaryButton}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="10,14,0,0" />
+                    </Grid>
+                    <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource CardTitle}" Margin="0,10,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="LOCAL DATA" Style="{StaticResource CardTitle}" />
+                        <TextBlock Text="Reports" Style="{StaticResource CardTitle}" Margin="0,10,0,0" />
+                        <TextBlock Text="{Binding ReportsDirectory}" Style="{StaticResource Mono}" TextWrapping="Wrap" />
+                        <TextBlock Text="Recordings" Style="{StaticResource CardTitle}" Margin="0,10,0,0" />
+                        <TextBlock Text="{Binding CapturesDirectory}" Style="{StaticResource Mono}" TextWrapping="Wrap" />
+                        <TextBlock Text="Recovery journal" Style="{StaticResource CardTitle}" Margin="0,10,0,0" />
+                        <TextBlock Text="{Binding SessionJournalPath}" Style="{StaticResource Mono}" TextWrapping="Wrap" />
+                        <Button Content="Open the data folder"
+                                Command="{Binding OpenDataFolderCommand}"
+                                HorizontalAlignment="Left"
+                                Margin="0,14,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="SAFETY" Style="{StaticResource CardTitle}" />
+                        <TextBlock Style="{StaticResource CardTitle}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,8,0,0"
+                                   Text="FramePilot does not modify the registry, does not disable security services, does not change startup entries, does not terminate processes by force and does not run with administrator privileges unless an operation genuinely needs them. The only system change it can make is activating a power plan that already exists, and that always happens with your confirmation and is reversed automatically." />
+                        <TextBlock Text="PRIVACY" Style="{StaticResource CardTitle}" Margin="0,14,0,0" />
+                        <TextBlock Style="{StaticResource CardTitle}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,8,0,0"
+                                   Text="There is no telemetry, no analytics, no advertising and no data upload. Benchmarks and system reports stay on this machine unless you export them yourself." />
+                        <TextBlock Text="VERSION" Style="{StaticResource CardTitle}" Margin="0,14,0,0" />
+                        <TextBlock Text="{Binding VersionText}" Style="{StaticResource Mono}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

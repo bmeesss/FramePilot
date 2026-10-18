@@ -1,0 +1,86 @@
+<Window x:Class="FramePilot.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FramePilot"
+        Height="880"
+        Width="1360"
+        MinHeight="660"
+        MinWidth="1080"
+        Background="{StaticResource WindowBackgroundBrush}"
+        Foreground="{StaticResource TextBrush}"
+        TextOptions.TextFormattingMode="Ideal"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="252" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Background="#12161D"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="18,20,18,12">
+                        <TextBlock Text="FramePilot"
+                                   FontSize="21"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource TextBrush}" />
+                        <TextBlock Text="Evidence based optimization"
+                                   Style="{StaticResource CardTitle}"
+                                   Margin="0,3,0,0" />
+                    </StackPanel>
+
+                    <ListBox Grid.Row="1"
+                             Margin="10,4"
+                             ItemsSource="{Binding NavigationItems}"
+                             SelectedItem="{Binding SelectedItem}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextBrush}" />
+                                    <TextBlock Text="{Binding Description}"
+                                               Style="{StaticResource CardTitle}"
+                                               TextWrapping="Wrap"
+                                               Margin="0,2,0,0" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel Grid.Row="2" Margin="18,10,18,18">
+                        <TextBlock Style="{StaticResource CardTitle}"
+                                   TextWrapping="Wrap"
+                                   Text="No telemetry, no analytics, no uploads. Every measurement stays on this machine." />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <ContentControl Grid.Column="1" Content="{Binding SelectedItem.View}" />
+        </Grid>
+
+        <Border Grid.Row="1"
+                Background="#12161D"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="18,8">
+            <TextBlock Text="{Binding StatusText}"
+                       Style="{StaticResource CardTitle}"
+                       TextWrapping="Wrap" />
+        </Border>
+    </Grid>
+</Window>
