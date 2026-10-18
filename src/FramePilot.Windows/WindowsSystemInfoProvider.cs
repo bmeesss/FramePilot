@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using FramePilot.Core.Models;
 using Microsoft.Win32;

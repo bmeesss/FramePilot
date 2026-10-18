@@ -19,7 +19,7 @@ public static class PhysicalProcessorCounter
     {
         try
         {
-            var length = 0;
+            uint length = 0;
 
             // The first call fails and reports the required buffer size.
             GetLogicalProcessorInformationEx(RelationProcessorCore, IntPtr.Zero, ref length);

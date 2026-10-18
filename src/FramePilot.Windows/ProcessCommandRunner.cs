@@ -97,13 +97,13 @@ public sealed class ProcessCommandRunner
 
             if (timeoutSource.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
             {
-                return new CommandResult(-1, standardOutput.ToString(), standardError.ToString(), timedOut: true);
+                return new CommandResult(-1, standardOutput.ToString(), standardError.ToString(), TimedOut: true);
             }
 
             throw;
         }
 
-        return new CommandResult(process.ExitCode, standardOutput.ToString(), standardError.ToString(), timedOut: false);
+        return new CommandResult(process.ExitCode, standardOutput.ToString(), standardError.ToString(), TimedOut: false);
     }
 
     private static void TryKill(Process process)

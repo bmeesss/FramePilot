@@ -176,7 +176,7 @@ public static class NativeConsoleProcess
         public int dwXCountChars;
         public int dwYCountChars;
         public int dwFillAttribute;
-        public int dwFlags;
+        public uint dwFlags;
         public short wShowWindow;
         public short cbReserved2;
         public IntPtr lpReserved2;
