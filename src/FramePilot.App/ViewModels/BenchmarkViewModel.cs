@@ -338,7 +338,7 @@ public sealed class BenchmarkViewModel : ViewModelBase
         }
         catch (OperationCanceledException)
         {
-            _log.Info("The wait for the recording was cancelled.");
+            _log.Information("The wait for the recording was cancelled.");
             IsCapturing = false;
             return;
         }
