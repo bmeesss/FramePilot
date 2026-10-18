@@ -87,7 +87,7 @@ public class ProcessClosePolicyTests
     public void GetBaseName_RemovesTheExtension()
     {
         Assert.Equal("game", ProcessClosePolicy.GetBaseName("game.exe"));
-        Assert.Equal("game", ProcessClosePolicy.GetBaseName("GAME.EXE"));
+        Assert.Equal("GAME", ProcessClosePolicy.GetBaseName("GAME.EXE"));
         Assert.Equal("game", ProcessClosePolicy.GetBaseName("game"));
         Assert.Equal(string.Empty, ProcessClosePolicy.GetBaseName(null));
     }

@@ -163,6 +163,9 @@ recording is rejected with an explanation instead of being interpreted.
 
 ## Supported metrics and their limits
 
+The meaning of every value and the limit of every measurement is documented in
+[docs/metrics.md](docs/metrics.md).
+
 | Metric | Source | Limits |
 | --- | --- | --- |
 | CPU utilisation | `GetSystemTimes` | Aggregate over all logical processors. The first sample has no value. |

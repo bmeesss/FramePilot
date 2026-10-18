@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FramePilot.App.Services;
 using FramePilot.Core.Abstractions;
@@ -27,6 +28,7 @@ public sealed class BenchmarkViewModel : ViewModelBase
     private readonly IAppLog _log;
 
     private IPresentMonCapture? _capture;
+    private CancellationTokenSource? _captureWait;
     private string _reportText = "Import a PresentMon recording to get started.";
     private string _statusMessage = string.Empty;
     private string _presentMonStatus = "PresentMon has not been checked yet.";
@@ -296,9 +298,12 @@ public sealed class BenchmarkViewModel : ViewModelBase
         _capture = await _presentMonService.StartCaptureAsync(request).ConfigureAwait(true);
         IsCapturing = true;
 
+        _captureWait?.Dispose();
+        _captureWait = new CancellationTokenSource();
+
         StatusMessage = $"Recording started ({fileName}). PresentMon stops automatically after {request.Duration.TotalSeconds:0} seconds.";
 
-        _ = WaitForCaptureAsync();
+        _ = WaitForCaptureAsync(_captureWait.Token);
     }
 
     private async Task StopCaptureAsync()
@@ -318,7 +323,7 @@ public sealed class BenchmarkViewModel : ViewModelBase
             : "The recording was stopped and the CSV file was closed properly.";
     }
 
-    private async Task WaitForCaptureAsync()
+    private async Task WaitForCaptureAsync(CancellationToken cancellationToken)
     {
         var capture = _capture;
 
@@ -329,7 +334,13 @@ public sealed class BenchmarkViewModel : ViewModelBase
 
         try
         {
-            await capture.WaitForCompletionAsync().ConfigureAwait(true);
+            await capture.WaitForCompletionAsync(cancellationToken).ConfigureAwait(true);
+        }
+        catch (OperationCanceledException)
+        {
+            _log.Info("The wait for the recording was cancelled.");
+            IsCapturing = false;
+            return;
         }
         catch (Exception ex)
         {

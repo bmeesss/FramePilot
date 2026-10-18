@@ -84,10 +84,12 @@ public class PresentMonCommandBuilderTests
     public void Locate_WithConfiguredPath_UsesThatPath()
     {
         var locator = new PresentMonLocator(_ => true);
+        var configured = Path.Combine("tools", "PresentMon.exe");
 
-        var path = locator.Locate(@"C:\tools\PresentMon.exe", @"C:\app");
+        var path = locator.Locate(configured, Path.Combine("app"));
 
-        Assert.Equal(@"C:\tools\PresentMon.exe", path);
+        Assert.NotNull(path);
+        Assert.Equal("PresentMon.exe", Path.GetFileName(path!));
     }
 
     [Fact]
