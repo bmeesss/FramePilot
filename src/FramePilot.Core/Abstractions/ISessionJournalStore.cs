@@ -1,3 +1,5 @@
+using FramePilot.Core.Sessions;
+
 namespace FramePilot.Core.Abstractions;
 
 /// <summary>

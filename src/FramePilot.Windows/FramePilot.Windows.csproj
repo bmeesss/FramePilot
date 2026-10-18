@@ -4,7 +4,11 @@
     <TargetFramework>net10.0-windows</TargetFramework>
     <RootNamespace>FramePilot.Windows</RootNamespace>
     <AssemblyName>FramePilot.Windows</AssemblyName>
-    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <!--
+      FramePilot supports Windows 10 and Windows 11. The target framework
+      version is left at the default so that the application also builds with
+      the plain .NET SDK; every API that is used is available on Windows 10.
+    -->
   </PropertyGroup>
 
   <ItemGroup>
