@@ -14,10 +14,18 @@ public readonly record struct ProcessorTimes(TimeSpan Idle, TimeSpan Kernel, Tim
 }
 
 /// <summary>A point in time CPU reading.</summary>
+/// <param name="UtilizationPercent">Average utilisation of all logical processors (0-100).</param>
+/// <param name="LogicalProcessorCount">Number of logical processors of the machine.</param>
+/// <param name="TotalCoreUtilizationPercent">
+/// The sum of the utilisation of all logical processors, i.e. the aggregated
+/// utilisation multiplied with the number of logical processors. 400 % on a
+/// machine with eight processors means that on average four cores were busy.
+/// It is an equivalent of the aggregated counter and not the load of one core.
+/// </param>
 public sealed record CpuSnapshot(
     double UtilizationPercent,
     int LogicalProcessorCount,
-    double? PerCoreUtilizationPercent)
+    double? TotalCoreUtilizationPercent)
 {
     /// <summary>Returned when the CPU utilisation could not be sampled.</summary>
     public static CpuSnapshot Unavailable(int logicalProcessorCount) =>

@@ -58,12 +58,17 @@ public static class CpuLoadCalculator
     }
 
     /// <summary>
-    /// Computes the per logical processor utilisation, i.e. the share of one
-    /// core that was busy. The Windows API used by FramePilot only exposes
-    /// aggregated counters, so the value is derived by scaling the aggregated
-    /// utilisation with the number of logical processors.
+    /// Computes the sum of the utilisation of all logical processors.
     /// </summary>
-    public static double? ComputePerCoreUtilization(double? aggregateUtilizationPercent, int logicalProcessorCount)
+    /// <remarks>
+    /// The Windows API that FramePilot uses only exposes aggregated counters,
+    /// so the load of a single core cannot be derived from it. Scaling the
+    /// aggregated utilisation with the number of logical processors gives the
+    /// sum of the per core values: 50 % on a machine with eight logical
+    /// processors results in 400 %, which means that on average four cores
+    /// were busy. It is an equivalent, not a measurement of one core.
+    /// </remarks>
+    public static double? ComputeTotalCoreUtilization(double? aggregateUtilizationPercent, int logicalProcessorCount)
     {
         if (aggregateUtilizationPercent is null || logicalProcessorCount <= 0)
         {
@@ -71,6 +76,6 @@ public static class CpuLoadCalculator
         }
 
         var value = aggregateUtilizationPercent.Value * logicalProcessorCount;
-        return Math.Clamp(value, 0.0, 100.0);
+        return Math.Clamp(value, 0.0, 100.0 * logicalProcessorCount);
     }
 }

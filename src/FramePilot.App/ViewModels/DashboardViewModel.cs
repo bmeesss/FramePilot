@@ -195,7 +195,8 @@ public sealed class DashboardViewModel : ViewModelBase
         if (snapshot.Cpu.IsAvailable)
         {
             CpuValue = snapshot.Cpu.UtilizationPercent.ToString("0.0", System.Globalization.CultureInfo.CurrentCulture) + " %";
-            CpuDetail = $"{snapshot.Cpu.LogicalProcessorCount} logical processors";
+            CpuDetail = $"{snapshot.Cpu.LogicalProcessorCount} logical processors, " +
+                        $"{((snapshot.Cpu.TotalCoreUtilizationPercent ?? 0) / 100.0).ToString("0.0", System.Globalization.CultureInfo.CurrentCulture)} busy on average";
             CpuBarValue = snapshot.Cpu.UtilizationPercent;
         }
         else

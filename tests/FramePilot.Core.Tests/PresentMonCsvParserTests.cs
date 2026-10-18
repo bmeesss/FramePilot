@@ -107,7 +107,7 @@ public class PresentMonCsvParserTests
         var result = new PresentMonCsvParser().Parse(sb.ToString());
 
         Assert.Equal(2, result.Frames.Count);
-        Assert.Equal(3, result.TotalDataRows);
+        Assert.Equal(4, result.TotalDataRows);
         Assert.Equal(2, result.SkippedRows);
         Assert.NotEmpty(result.Warnings);
     }

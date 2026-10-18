@@ -47,7 +47,8 @@ public class CommandLineSplitterTests
     {
         var arguments = CommandLineSplitter.Split("--name \"a & b\"");
 
-        Assert.Single(arguments);
-        Assert.Equal("a & b", arguments[0]);
+        Assert.Equal(2, arguments.Count);
+        Assert.Equal("--name", arguments[0]);
+        Assert.Equal("a & b", arguments[1]);
     }
 }

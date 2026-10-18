@@ -44,11 +44,11 @@ public sealed class SystemMonitor
             var elapsed = _hasPreviousSample ? now - _previousSampleTime : TimeSpan.Zero;
 
             var utilization = CpuLoadCalculator.ComputeUtilization(_previousProcessorTimes, processorTimes);
-            var perCore = CpuLoadCalculator.ComputePerCoreUtilization(utilization, LogicalProcessorCount);
+            var totalCore = CpuLoadCalculator.ComputeTotalCoreUtilization(utilization, LogicalProcessorCount);
 
             var cpu = utilization is null
                 ? CpuSnapshot.Unavailable(LogicalProcessorCount)
-                : new CpuSnapshot(utilization.Value, LogicalProcessorCount, perCore);
+                : new CpuSnapshot(utilization.Value, LogicalProcessorCount, totalCore);
 
             var memory = _source.GetMemory();
             var disks = _source.GetDisks();

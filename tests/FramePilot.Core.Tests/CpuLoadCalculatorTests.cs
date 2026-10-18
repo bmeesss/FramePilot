@@ -76,17 +76,26 @@ public class CpuLoadCalculatorTests
     }
 
     [Fact]
-    public void ComputePerCoreUtilization_ScalesWithProcessorCount()
+    public void ComputeTotalCoreUtilization_ScalesWithProcessorCount()
     {
-        var result = CpuLoadCalculator.ComputePerCoreUtilization(50.0, 8);
+        var result = CpuLoadCalculator.ComputeTotalCoreUtilization(50.0, 8);
 
         Assert.NotNull(result);
         Assert.Equal(400.0, result!.Value, 6);
     }
 
     [Fact]
-    public void ComputePerCoreUtilization_WithoutUtilization_ReturnsNull()
+    public void ComputeTotalCoreUtilization_IsClampedToTheTotalCapacity()
     {
-        Assert.Null(CpuLoadCalculator.ComputePerCoreUtilization(null, 8));
+        var result = CpuLoadCalculator.ComputeTotalCoreUtilization(100.0, 8);
+
+        Assert.NotNull(result);
+        Assert.Equal(800.0, result!.Value, 6);
+    }
+
+    [Fact]
+    public void ComputeTotalCoreUtilization_WithoutUtilization_ReturnsNull()
+    {
+        Assert.Null(CpuLoadCalculator.ComputeTotalCoreUtilization(null, 8));
     }
 }
